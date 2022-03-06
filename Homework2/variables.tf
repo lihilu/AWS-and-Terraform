@@ -3,6 +3,11 @@ variable "aws_region" {
   type    = string
 }
 
+variable "environment" {
+  default     = "prod"
+  description = "It can be changed upon the environment's purpose"
+}
+
 variable "instance_type" {
   description = "The type of the ec2, for example - t2.medium"
   type        = string
@@ -68,7 +73,7 @@ variable "volumes_type" {
 
 variable "owner_tag" {
   description = "The owner tag will be applied to every resource in the project through the 'default variables' feature"
-  default = "Ops-School"
+  default = "Lihi Reisman"
   type    = string
 }
 
@@ -76,7 +81,6 @@ variable "purpose_tag" {
   default = "Whiskey"
   type    = string
 }
-
 
 resource "tls_private_key" "admin1" {
   algorithm = "RSA"
@@ -95,4 +99,14 @@ resource "local_file" "server_key" {
 variable "cidr_blocks" {
   default = "0.0.0.0/0"
   
+}
+
+variable "webport" {
+  description = "allow http access"
+  default = "80"  
+}
+
+variable "sshport" {
+  description = "allow ssh access"
+  default = "22"  
 }

@@ -12,3 +12,10 @@ output "instance_public_ips" {
   value       =  join(",",concat(aws_instance.nginx.*.public_ip))
   description = "The public IP address of server instance."
 }
+
+
+
+output "user_data" {
+  value       =  aws_instance.nginx.*.user_data
+  description = "user data"
+}

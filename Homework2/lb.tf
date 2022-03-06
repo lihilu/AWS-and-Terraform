@@ -22,6 +22,7 @@ resource "aws_lb_listener" "web-nginx" {
   }
 }
 
+
 resource "aws_lb_target_group" "web-nginx" {
   name     = "nginx-target-group"
   port     = 80

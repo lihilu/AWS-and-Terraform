@@ -2,7 +2,7 @@ resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr_block
 
   tags = {
-    "Name" = "My_VPC"
+    "Name" = "${var.environment} - VPC - ${var.purpose_tag}"
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_subnet" "public" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    "Name" = "Public_subnet_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - Public_subnet_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_subnet" "private" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    "Name" = "Private_subnet_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - Private_subnet_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
   }
 }
 
@@ -36,7 +36,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "IGW_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - IGW_${aws_vpc.vpc.id}"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_eip" "eip" {
   count = length(var.public_subnet)
 
   tags = {
-    "Name" = "NAT_elastic_ip_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - NAT_elastic_ip_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public.*.id[count.index]
 
   tags = {
-    "Name" = "NAT_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - NAT_${regex(".$", data.aws_availability_zones.available.names[count.index])}_${aws_vpc.vpc.id}"
   }
 }
 
@@ -66,7 +66,7 @@ resource "aws_route_table" "route_tables" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "${var.route_tables_names[count.index]}_RTB_${aws_vpc.vpc.id}"
+    "Name" = "${var.environment} - ${var.route_tables_names[count.index]}_RTB_${aws_vpc.vpc.id}"
   }
 }
 

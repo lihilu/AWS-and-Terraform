@@ -1,12 +1,12 @@
 locals {
-  my-nginx-instance-userdata = <<USERDATA
-#!/bin/bash
+  userdata = <<EOF
+#! /bin/bash
 sudo apt update -y
 sudo apt install nginx -y
-sed -i "s/nginx/Grandpa's Whiskey at $HOSTNAME/g" /var/www/html/index.nginx-debian.html
-sed -i '15,23d' /var/www/html/index.nginx-debian.html
-service nginx restart
-sudo sh -c 'echo -e "#!/bin/bash \nsudo aws s3 cp /var/log/nginx/access.log  s3://terraform-bucket-maya/logs" > /etc/cron.hourly/upload_to_s3.sh'
+echo "Grandpa's Whiskey at $HOSTNAME" | sudo tee /var/www/html/index.html
+sudo systemctl restart nginx
+sudo apt-get -y install awscli
+sudo sh -c 'echo "#!/bin/bash \nsudo aws s3 cp /var/log/nginx/access.log  s3://s3bucketwiskey/logs" > /etc/cron.hourly/upload_to_s3.sh'
 sudo chmod +x /etc/cron.hourly/upload_to_s3.sh
-USERDATA
+EOF
 }
