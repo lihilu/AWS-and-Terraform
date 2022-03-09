@@ -3,7 +3,6 @@ variable "aws_region" {
   type    = string
 }
 
-
 variable "namespace" {
   description = "The project namespace to use for unique resource naming"
   default     = "prod"

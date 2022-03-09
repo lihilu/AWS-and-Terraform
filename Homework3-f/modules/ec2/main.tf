@@ -17,11 +17,14 @@ variable "ubuntu_account_number" {
 // Configure the EC2 instance in a public subnet
 resource "aws_instance" "ec2_web" {
   ami                         = var.ec2_ami
+  count                       = "2"
   associate_public_ip_address = true
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  subnet_id                   = var.subnet_public_id[0]
+  iam_instance_profile        = aws_iam_instance_profile.admin.name
+  subnet_id                   = var.subnet_public_id[count.index]
   vpc_security_group_ids      = [var.sg_pub_id]
+  user_data                   = file("${path.module}${var.user_data_web}")
 
   tags = {
     #var.tags
@@ -46,10 +49,11 @@ resource "aws_instance" "ec2_web" {
 // Configure the EC2 instance in a private subnet
 resource "aws_instance" "ec2_db" {
   ami                         = var.ec2_ami
+  count = "2"
   associate_public_ip_address = false
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  subnet_id                   = var.subnet_private_id[1]
+  subnet_id                   = var.subnet_private_id[count.index]
   vpc_security_group_ids      = [var.sg_priv_id]
   tags = {
     "Name" = "${var.env_name} - DB"
@@ -70,3 +74,5 @@ resource "aws_instance" "ec2_db" {
   }
 
 }
+
+

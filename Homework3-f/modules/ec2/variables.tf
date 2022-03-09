@@ -41,3 +41,10 @@ variable "instance_type" {
 variable "subnet_public_id"{}
 
 variable "subnet_private_id" {}
+
+variable "user_data_web" {
+  description = "Script file for each web instance"
+  type        = string
+  default     = "/user_data.sh"
+}
+
