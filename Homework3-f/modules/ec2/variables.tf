@@ -48,3 +48,7 @@ variable "user_data_web" {
   default     = "/user_data.sh"
 }
 
+variable "lb_sg_array" {
+  description = "Security groups for LB only"
+  type        = list(string)
+}

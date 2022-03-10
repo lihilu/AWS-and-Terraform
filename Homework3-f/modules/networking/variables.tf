@@ -40,8 +40,3 @@ variable "sshport" {
   description = "allow ssh access"
   default = "22"  
 }
-
-
-#variable "tg_config" {
-#  type = map(string)
-#}
