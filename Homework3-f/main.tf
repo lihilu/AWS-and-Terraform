@@ -13,6 +13,7 @@ module "instance" {
   sg_priv_id  = module.networking.sg_priv_id
   key_name   = module.ssh-key.key_name
   env_name= "prod"
+  lb_sg_array  = [module.networking.sg_pub_id]
 }
 
 

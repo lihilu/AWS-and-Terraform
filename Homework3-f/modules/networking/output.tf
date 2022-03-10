@@ -19,3 +19,4 @@ output "aws_subnet_private" {
   value = aws_subnet.private.*.id
   
 }
+

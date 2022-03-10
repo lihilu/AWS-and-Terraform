@@ -76,3 +76,58 @@ resource "aws_instance" "ec2_db" {
 }
 
 
+###################LB
+
+resource "aws_lb" "web-nginx" {
+  name               = "nginx-alb-${var.aws_vpc.id}"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = var.lb_sg_array
+  subnets            = var.subnet_public_id
+
+  enable_deletion_protection = false
+
+  tags = {
+    Environment = "nginx-alb-${var.aws_vpc.id}"
+  }
+}
+
+resource "aws_lb_listener" "web-nginx" {
+  load_balancer_arn = aws_lb.web-nginx.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web-nginx.arn
+  }
+}
+
+
+resource "aws_lb_target_group" "web-nginx" {
+  name     = "nginx-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = var.aws_vpc.id
+
+  health_check {
+    enabled = true
+    path    = "/"
+  }
+  stickiness {    
+    type            = "lb_cookie"    
+    cookie_duration = 60   
+    enabled         = "true"  
+  } 
+
+  tags = {
+    "Name" = "nginx-target-group-${var.aws_vpc.id}"
+  }
+}
+
+resource "aws_lb_target_group_attachment" "web_server" {
+  count = length(aws_instance.ec2_web)
+  target_group_arn = aws_lb_target_group.web-nginx.id
+  target_id        = aws_instance.ec2_web.*.id[count.index]
+  port             = 80
+}
