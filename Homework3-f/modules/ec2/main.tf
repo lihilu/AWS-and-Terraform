@@ -56,7 +56,7 @@ resource "aws_instance" "ec2_db" {
   subnet_id                   = var.subnet_private_id[count.index]
   vpc_security_group_ids      = [var.sg_priv_id]
   tags = {
-    "Name" = "${var.env_name} - DB"
+    "Name" = "${var.env_name} - DB - ${regex(".$", data.aws_availability_zones.available.names[count.index])}"
   }
   
     # root disk
